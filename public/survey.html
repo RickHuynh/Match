@@ -67,6 +67,8 @@
 <script type="text/javascript">
     $("#search-form").submit(function (event) {
         event.preventDefault();
+
+        //This allows me to get the value of the checked radio button.
         var answer1 = $("input[name='q1']:checked").val();
         var answer2 = $("input[name='q2']:checked").val();
         var answer3 = $("input[name='q3']:checked").val();
@@ -77,19 +79,30 @@
             answers: [answer1, answer2, answer3, answer4]
         }
 
+        //this allows me to make a new array and do an operation on each element
         var myAnswers = newFriend["answers"]
             .map(answer => answer * answer);
 
+        //this allows me to get the url location localhost:3000*
         var currentURL = location.origin;
 
-        var Result = [];
-
+        //this is the query call to the server
         $.post(currentURL + "/api/newFriend", newFriend, function (data) {
             var match;
 
             var leastDifference = 10000000;
 
+            //learned cool new functions so i don't have to use for loops.
+            //for each lets me easily loop through array
+            //map lets me add 2 arrays easily
+            //reduce lets me sum up an array's elements easily.
             data.forEach(friend => {
+
+                /*
+                I used Object.getKeys on friend because I couldn't know for the life of me
+                How the fuck I was supposed to get the value of the array inside an object
+                that's inside an array.
+                */
                 var answerDiff = friend["answers[]"]
                     .map((answer, indx) => Math.abs(answer * answer - myAnswers[indx]))
                     .reduce((total, answerSquared) => total + answerSquared, 0);
